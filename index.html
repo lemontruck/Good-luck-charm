@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>오늘의 부적</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gaegu:wght@700&family=Gowun+Dodum&family=Song+Myung&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div class="app" id="app">
+
+  <!-- 홈 -->
+  <section class="view on" id="v-home" aria-labelledby="home-title">
+    <div class="hero" id="hero" aria-hidden="true"></div>
+    <h1 class="home-title" id="home-title">오늘의<br>부적</h1>
+    <p class="home-copy" id="home-copy">생일과 날짜로 행운 키워드 8개를 뽑고, 그 키워드 스티커로 나만의 부적을 꾸며요.</p>
+    <div class="stack">
+      <button class="btn" id="go-start">부적 만들기</button>
+      <button class="btn sub" id="go-resume" hidden>만들던 부적 이어서 꾸미기</button>
+      <button class="btn sub" id="go-gallery">나의 부적 보기</button>
+    </div>
+    <p class="fine">재미로 보는 운세예요. 같은 날짜, 같은 정보로 뽑으면 같은 키워드가 나와요.</p>
+  </section>
+
+  <!-- 입력 -->
+  <section class="view" id="v-input" aria-labelledby="in-title">
+    <div class="bar"><button class="icon-btn" data-back="home" aria-label="뒤로">←</button><h2 id="in-title">키워드 뽑기</h2></div>
+    <p class="q">언제를 위한 부적인가요?</p>
+    <div class="chips two" id="day-chips" role="group" aria-label="부적 날짜"></div>
+    <p class="fine" id="night-note" hidden style="margin-top:8px">하루를 마무리할 시간이라 내일 부적으로 골라뒀어요.</p>
+    <p class="q">어떤 운이 궁금해요?</p>
+    <div class="chips" id="fortune-chips" role="group" aria-label="운세 종류"></div>
+    <p class="q">생년월일</p>
+    <input class="field" id="birth" inputmode="numeric" autocomplete="bday" placeholder="2000.01.01" maxlength="10" aria-describedby="birth-err">
+    <p class="err" id="birth-err" role="alert"></p>
+    <label class="check"><input type="checkbox" id="no-birth"> 생일 없이 뽑을래요</label>
+    <p class="fine">생년월일은 이 기기에서 키워드를 계산하는 데만 쓰이고 저장되지 않아요.</p>
+    <div style="margin-top:16px"><button class="btn" id="do-draw" disabled>오늘의 키워드 뽑기</button></div>
+  </section>
+
+  <!-- 결과 -->
+  <section class="view" id="v-reveal" aria-labelledby="rv-title">
+    <div class="bar"><button class="icon-btn" data-back="input" aria-label="뒤로">←</button><h2 id="rv-title">오늘의 키워드</h2></div>
+    <div class="line-bubble"><small id="rv-meta"></small><span id="rv-line"></span></div>
+    <div class="kw-grid" id="kw-grid"></div>
+    <div class="reveal-actions">
+      <button class="btn" id="go-editor">이 키워드로 부적 꾸미기</button>
+      <button class="btn sub small" id="do-reroll"></button>
+    </div>
+  </section>
+
+  <!-- 편집기 -->
+  <section class="view" id="v-editor" aria-labelledby="ed-title">
+    <div class="bar">
+      <button class="icon-btn" data-back="reveal" aria-label="키워드 보기로 돌아가기">←</button>
+      <h2 id="ed-title">부적 꾸미기</h2>
+      <button class="icon-btn" id="undo" aria-label="되돌리기" disabled>↶</button>
+      <button class="btn small" id="do-save" style="width:auto;padding:0 16px">저장</button>
+    </div>
+    <div class="editor-wrap">
+      <div class="card-col">
+        <div class="card-shell" id="shell">
+          <div id="board">
+            <img id="frame-img" alt="" crossorigin="anonymous">
+            <div class="card-text" id="ct-sub"></div>
+            <div class="card-text" id="ct-foot"></div>
+            <div id="stk-layer"></div>
+            <div class="sel" id="sel"><div class="handle" id="handle" aria-hidden="true">⤢</div></div>
+          </div>
+          <div class="ftb" id="ftb" role="toolbar" aria-label="선택한 스티커 편집" hidden>
+            <button data-act="front" aria-label="앞으로" title="앞으로">⬆</button>
+            <button data-act="back" aria-label="뒤로" title="뒤로">⬇</button>
+            <button data-act="rotate" aria-label="15도 회전" title="회전">↻</button>
+            <span class="ftb-sep" data-kw></span>
+            <button class="ftb-st" data-act="st:y2k" data-kw aria-label="Y2K 팝 스타일로">Y2K</button>
+            <button class="ftb-st" data-act="st:retro" data-kw aria-label="레트로 스타일로">레트로</button>
+            <button class="ftb-st" data-act="st:doodle" data-kw aria-label="두들 스타일로">두들</button>
+            <span class="ftb-sep"></span>
+            <button class="ftb-del" data-act="del" aria-label="삭제" title="삭제">✕</button>
+          </div>
+        </div>
+      </div>
+      <div class="stack">
+        <p class="hint" id="hint">아래 스티커를 누르면 카드에 붙어요. 붙인 스티커는 끌어서 옮겨요.</p>
+        <div class="row">
+          <div class="swatches grow" id="theme-sw" role="group" aria-label="부적 틀 테마" hidden></div>
+          <div class="grow"></div>
+          <button class="btn sub small" id="do-bulk" style="width:auto;padding:0 14px">일괄 편집</button>
+          <button class="btn sub small" id="do-shuffle" style="width:auto;padding:0 14px">배치 섞기</button>
+        </div>
+        <div>
+          <div class="tabs" role="tablist">
+            <button role="tab" aria-selected="true" data-tab="kw">뽑은 키워드</button>
+            <button role="tab" aria-selected="false" data-tab="deco">꾸미기</button>
+          </div>
+          <div class="tray-wrap" role="tabpanel">
+            <div class="seg" id="style-seg" role="group" aria-label="뽑은 키워드 스티커 스타일">
+              <button data-style="y2k">Y2K 팝</button><button data-style="retro">레트로</button><button data-style="doodle">두들</button>
+            </div>
+            <div class="tray" id="tray"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 나의 부적 -->
+  <section class="view" id="v-gallery" aria-labelledby="gl-title">
+    <div class="bar"><button class="icon-btn" data-back="home" aria-label="뒤로">←</button><h2 id="gl-title">나의 부적</h2></div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="sheet">
+    <h3 id="m-title"></h3>
+    <img id="m-img" alt="">
+    <p class="fine" id="m-note" style="margin-top:0"></p>
+    <div class="stack" id="m-actions"></div>
+  </div>
+</div>
+<div class="modal" id="bulk" role="dialog" aria-modal="true" aria-labelledby="bulk-title">
+  <div class="sheet bulk-sheet">
+    <h3 id="bulk-title">일괄 편집</h3>
+    <p class="bulk-q">붙인 키워드 스티커 스타일 한 번에 바꾸기</p>
+    <div class="seg" id="bulk-style"><button data-style="y2k">Y2K 팝</button><button data-style="retro">레트로</button><button data-style="doodle">두들</button></div>
+    <p class="bulk-q">키워드 8개를 한 세트로 붙이기</p>
+    <div class="seg" id="bulk-add"><button data-style="y2k">Y2K 팝</button><button data-style="retro">레트로</button><button data-style="doodle">두들</button></div>
+    <p class="bulk-q">카드 비우기</p>
+    <button class="btn sub small bulk-del" id="bulk-del">스티커 모두 지우기</button>
+    <button class="link" id="bulk-close" style="display:block;margin:10px auto 0">닫기</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="data/config.js"></script>
+<script src="data/fortune-data.js"></script>
+<script src="data/frame-themes.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
